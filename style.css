@@ -44,7 +44,7 @@
     font-weight: 600;
 }
 
-#control-buttons > button {
+button {
     width: 110px;
     font-size: 18px;
     border-radius: 10px;
@@ -53,7 +53,7 @@
     cursor: pointer;
 }
 
-#control-buttons > button:active {
+button:active {
     background-color: #88d8a3;
 }
 
