@@ -25,7 +25,7 @@
 }
 
 #results {
-    width: 400px;
+    width: 600px;
     height: 200px;
     border: 1px solid #d6d6d6;
     border-radius: 8px;
@@ -35,7 +35,12 @@
 
 .score {
     width: 70%;
+    align-items: center;
     justify-content: space-between;
+}
+
+.score > button {
+    margin: 0;
 }
 
 .score > p {

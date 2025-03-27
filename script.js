@@ -1,49 +1,38 @@
+let rounds = 0;
+let humanScore = 0;
+let computerScore = 0;
+
 const getComputerChoice = () => {
-    const choice = Math.floor(Math.random() * 3);
+    const choices = ["Rock", "Scissors", "Paper"];
+    return choices[Math.floor(Math.random() * choices.length)];
+}
 
-    if (choice === 2) {
-        return "Rock";
-    } else if (choice === 1) {
-        return "Scissors";
-    } else {
-        return "Paper";
+const playRound = (humanChoice, computerChoice) => {
+    const boardRoundText = document.querySelector(".round");
+    const boardPlayerScoreText = document.querySelector(".player-score");
+    const boardComputerScoreText = document.querySelector(".computer-score");
+
+    rounds++;
+    boardRoundText.textContent = `0${rounds}`;
+
+    if ((humanChoice === "Rock" && computerChoice === "Scissors") 
+        || (humanChoice === "Scissors" && computerChoice === "Paper") 
+        || (humanChoice === "Paper" && computerChoice === "Rock")) {
+        humanScore++;
+        boardPlayerScoreText.textContent = `0${humanScore}`;
+    } else if ((computerChoice === "Rock" && humanChoice === "Scissors") 
+        || (computerChoice === "Scissors" && humanChoice === "Paper") 
+        || (computerChoice === "Paper" && humanChoice === "Rock")) {
+        computerScore++;
+        boardComputerScoreText.textContent = `0${computerScore}`;
+    }
+
+    if (rounds === 5) {
+        displayGameResult();
     }
 }
 
-const getHumanChoice = () => {
-    const humanChoice = prompt("Rock, Paper or Scissors?").toLocaleLowerCase();
-    const capitalizedHumanChoice = humanChoice.charAt(0).toUpperCase() + humanChoice.slice(1);
-    return capitalizedHumanChoice;
-}
-
-
-const playGame = () => {
-    let humanScore = 0;
-    let computerScore = 0;
-
-    const playRound = (humanChoice = getHumanChoice(), computerChoice = getComputerChoice()) => {
-        if (humanChoice === computerChoice) {
-            return console.log(`It's a tie!`);
-        } else if ((humanChoice === "Rock" && computerChoice === "Scissors") || 
-                   (humanChoice === "Scissors" && computerChoice === "Paper") || 
-                   (humanChoice === "Paper" && computerChoice === "Rock")) {
-            humanScore++;
-            return console.log(`You win! ${humanChoice} beats ${computerChoice}!`);
-        } else {
-            computerScore++;
-            return console.log(`You lose! ${computerChoice} beats ${humanChoice}!`);
-        }
-    }
-
-    for (let rounds = 1; rounds <= 5; rounds++) {
-        console.log(`=============START ROUND ${rounds}=============`);
-        playRound();
-        console.log(`=============END ROUND ${rounds}=============`);
-    }
-
-    console.log(`YOU: 0${humanScore}`);
-    console.log(`COMPUTER: 0${computerScore}`);
-
+const calculateGameResult = () => {
     if (humanScore === computerScore) {
         return "The game ends in a tie!";
     } else if (humanScore > computerScore) {
@@ -52,3 +41,56 @@ const playGame = () => {
         return "You Lose!";
     }
 }
+
+const commandButtonDisable = (option) => {
+    const commandButtons = document.querySelectorAll("button");
+
+    commandButtons.forEach((button) => {
+        button.disabled = option;
+    });
+}
+
+const restartGame = (resultElement) => {
+    rounds = 0;
+    humanScore = 0;
+    computerScore = 0;
+
+    const scoreBoardText = document.querySelectorAll(".score-text");
+
+    scoreBoardText.forEach((p) => {
+        p.textContent = "00";
+    });
+
+    commandButtonDisable(false);
+
+    resultElement.remove();
+}
+
+const displayGameResult = () => {
+    const scoreBoard = document.querySelector("#results");
+
+    commandButtonDisable(true);
+
+    const div = document.createElement("div");
+    div.setAttribute("class", "score flex");
+
+    const resultText = document.createElement("p");
+    resultText.textContent = calculateGameResult();
+
+    const btnPlayAgain = document.createElement("button");
+    btnPlayAgain.textContent = "Restart!";
+    btnPlayAgain.addEventListener("click", () => {
+        restartGame(div);
+    });
+
+    div.append(resultText, btnPlayAgain);
+    scoreBoard.appendChild(div);
+}
+
+const choiceButtons = document.querySelectorAll("button");
+
+choiceButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+        playRound(button.textContent, getComputerChoice());
+    });
+});
